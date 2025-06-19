@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Code Compiler</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/codemirror.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/dracula.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/monokai.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/material.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/nord.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/theme/solarized.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/addon/hint/show-hint.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/addon/fold/foldgutter.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/addon/dialog/dialog.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/codemirror/addon/search/matchesonscrollbar.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/all.min.css') }}">"<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .editor-container {
+            display: flex;
+            gap: 20px;
+            height: 70vh;
+        }
+        .code-section, .output-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #code-editor {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            background-color: #fff;
+        }
+        .CodeMirror {
+            height: auto;
+            min-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .CodeMirror-focused {
+            border-color: #66afe9;
+            box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+        .CodeMirror-selected {
+            background-color: rgba(100, 100, 255, 0.2) !important;
+        }
+        .CodeMirror-gutters {
+            border-right: 1px solid #ddd;
+            background-color: #f7f7f7;
+        }
+        .CodeMirror-linenumber {
+            color: #999;
+            padding: 0 8px;
+        }
+        .CodeMirror-matchingbracket {
+            color: #0b0 !important;
+            font-weight: bold;
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        .CodeMirror-nonmatchingbracket {
+            color: #f00 !important;
+            background-color: rgba(255, 0, 0, 0.1);
+        }
+        .cm-s-monokai .CodeMirror-activeline-background {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        #output {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #fff;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .language-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .language-options select, .language-options input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .success {
+            color: #008000;
+        }
+        .status {
+            font-style: italic;
+        }
+        .examples {
+            margin-top: 20px;
+        }
+        .example-btn {
+            background-color: #2196F3;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .example-btn:hover {
+            background-color: #0b7dda;
+        }
+        .language-tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .language-tab {
+            padding: 8px 16px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .language-tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        .compiler-options {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+        .editor-toolbar-group {
+            display: flex;
+            gap: 5px;
+        }
+        .toolbar-btn {
+            padding: 5px 10px;
+            background-color: transparent;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .toolbar-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .toolbar-select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .split-view {
+            display: flex;
+            gap: 10px;
+        }
+        .split-pane {
+            flex: 1;
+        }
+        .autocomplete-item {
+            padding: 2px 5px;
+        }
+        .autocomplete-item-keyword {
+            color: #07a;
+            font-weight: bold;
+        }
+        .autocomplete-item-variable {
+            color: #905;
+        }
+        .autocomplete-item-function {
+            color: #8B008B;
+        }
+        .CodeMirror-foldmarker {
+            color: blue;
+            text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+            font-family: arial;
+            line-height: .3;
+            cursor: pointer;
+            padding: 0 3px;
+        }
+        .settings-panel {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 15px;
+            display: none;
+        }
+        .settings-group {
+            margin-bottom: 15px;
+        }
+        .settings-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Local Code Compiler</h1>    <div class="container">
+        <div class="language-tabs">
+            <div class="language-tab active" data-language="rust" onclick="changeLanguage('rust')">Rust</div>
+            <div class="language-tab" data-language="python" onclick="changeLanguage('python')">Python</div>
+            <div class="language-tab" data-language="c" onclick="changeLanguage('c')">C</div>
+            <div class="language-tab" data-language="cpp" onclick="changeLanguage('cpp')">C++</div>
+        </div>
+        
+        <div class="editor-toolbar">
+            <div class="editor-toolbar-group">
+                <button class="toolbar-btn" title="Undo (Ctrl+Z)" onclick="editor.undo()"><i class="fas fa-undo"></i></button>
+                <button class="toolbar-btn" title="Redo (Ctrl+Y)" onclick="editor.redo()"><i class="fas fa-redo"></i></button>
+                <button class="toolbar-btn" title="Format Code" onclick="formatCode()"><i class="fas fa-align-left"></i></button>
+                <button class="toolbar-btn" title="Comment Selection (Ctrl+/)" onclick="toggleComment()"><i class="fas fa-comment"></i></button>
+                <button class="toolbar-btn" title="Indent (Tab)" onclick="indentCode()"><i class="fas fa-indent"></i></button>
+                <button class="toolbar-btn" title="Outdent (Shift+Tab)" onclick="outdentCode()"><i class="fas fa-outdent"></i></button>
+                <button class="toolbar-btn" title="Find (Ctrl+F)" onclick="startSearch()"><i class="fas fa-search"></i></button>
+                <button class="toolbar-btn" title="Find and Replace (Ctrl+H)" onclick="startReplace()"><i class="fas fa-exchange-alt"></i></button>
+            </div>
+            <div class="editor-toolbar-group">
+                <select class="toolbar-select" id="theme-select" onchange="changeTheme()">
+                    <option value="default">Default Theme</option>
+                    <option value="monokai">Monokai</option>
+                    <option value="dracula">Dracula</option>
+                    <option value="material">Material</option>
+                    <option value="nord">Nord</option>
+                    <option value="solarized light">Solarized Light</option>
+                    <option value="solarized dark">Solarized Dark</option>
+                </select>
+                <select class="toolbar-select" id="font-size" onchange="changeFontSize()">
+                    <option value="12px">12px</option>
+                    <option value="14px" selected>14px</option>
+                    <option value="16px">16px</option>
+                    <option value="18px">18px</option>
+                    <option value="20px">20px</option>
+                </select>
+                <button class="toolbar-btn" title="Settings" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
+        
+        <div id="settings-panel" class="settings-panel">
+            <div class="settings-group">
+                <div class="settings-title">Editor Settings</div>
+                <div class="settings-row">
+                    <label for="tab-size">Tab Size:</label>
+                    <select id="tab-size" onchange="changeTabSize()">
+                        <option value="2">2 spaces</option>
+                        <option value="4" selected>4 spaces</option>
+                        <option value="8">8 spaces</option>
+                    </select>
+                </div>
+                <div class="settings-row">
+                    <label for="auto-close-brackets">Auto-close brackets:</label>
+                    <input type="checkbox" id="auto-close-brackets" checked onchange="toggleAutoCloseBrackets()">
+                </div>
+                <div class="settings-row">
+                    <label for="line-wrapping">Line wrapping:</label>
+                    <input type="checkbox" id="line-wrapping" checked onchange="toggleLineWrapping()">
+                </div>
+                <div class="settings-row">
+                    <label for="line-numbers">Line numbers:</label>
+                    <input type="checkbox" id="line-numbers" checked onchange="toggleLineNumbers()">
+                </div>
+                <div class="settings-row">
+                    <label for="highlight-active-line">Highlight active line:</label>
+                    <input type="checkbox" id="highlight-active-line" checked onchange="toggleActiveLineHighlight()">
+                </div>
+            </div>
+            <div class="settings-group">
+                <div class="settings-title">Keyboard Shortcuts</div>
+                <div style="font-size: 0.9em; line-height: 1.4;">
+                    <div>Ctrl+Space: Autocomplete</div>
+                    <div>Ctrl+F: Find</div>
+                    <div>Ctrl+H: Replace</div>
+                    <div>Ctrl+G: Go to Line</div>
+                    <div>Ctrl+/: Toggle Comment</div>
+                    <div>Alt+F: Format Code</div>
+                    <div>Ctrl+[: Indent</div>
+                    <div>Ctrl+]: Outdent</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="language-options">
+            <label for="compiler-options">Compiler Options:</label>
+            <input type="text" id="compiler-options" placeholder="e.g. -O2 -Wall">
+        </div>
+        
+        <div class="examples">
+            <button class="example-btn" onclick="loadExample('hello')">Hello World</button>
+            <button class="example-btn" onclick="loadExample('fibonacci')">Fibonacci</button>
+            <button class="example-btn" onclick="loadExample('input')">User Input</button>
+        </div>
+        
+        <div class="editor-container">
+            <div class="code-section">
+                <div class="section-title">Code:</div>
+                <textarea id="code-editor" placeholder="Enter your code here..."></textarea>
+                <div class="section-title" style="margin-top: 10px;">Program Input:</div>
+                <textarea id="program-input" placeholder="Enter input for your program here..." style="height: 100px; width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; resize: none; background-color: #fff;"></textarea>
+            </div>
+            <div class="output-section">
+                <div class="section-title">Output:</div>
+                <div id="output"></div>
+            </div>
+        </div>
+        <div class="controls">
+            <div id="status" class="status">Ready</div>
+            <button id="compile-btn" onclick="compileAndRun()">Compile & Run</button>
+        </div>
+    </div>    <!-- CodeMirror JS -->
+    <script src="{{ url_for('static', filename='js/codemirror/codemirror.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/rust/rust.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/mode/clike/clike.min.js') }}"></script>
+    
+    <!-- CodeMirror Addons -->
+    <script src="{{ url_for('static', filename='js/codemirror/addon/edit/closebrackets.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/edit/matchbrackets.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/edit/closetag.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/fold/foldcode.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/fold/foldgutter.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/fold/brace-fold.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/fold/comment-fold.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/hint/show-hint.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/hint/anyword-hint.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/search/search.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/search/searchcursor.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/search/jump-to-line.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/dialog/dialog.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/search/match-highlighter.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/selection/active-line.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/comment/comment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/display/placeholder.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/addon/edit/trailingspace.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/codemirror/keymap/sublime.min.js') }}"></script>
+    
+    <!-- Additional Libraries -->
+    <script src="{{ url_for('static', filename='js/beautify/beautify.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/beautify/beautify-css.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/beautify/beautify-html.min.js') }}"></script>
+    
+    <script>
+        // Initialize CodeMirror
+        let editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            mode: "rust",
+            theme: "default",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            styleActiveLine: true,
+            lineWrapping: true,
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            extraKeys: {
+                "Ctrl-Space": "autocomplete",
+                "Ctrl-/": "toggleComment",
+                "Alt-F": formatCode,
+                "Ctrl-J": "toMatchingTag",
+                "Ctrl-Q": function(cm) { cm.foldCode(cm.getCursor()); },
+                "Ctrl-Enter": compileAndRun,
+                "F11": function(cm) {
+                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                },
+                "Esc": function(cm) {
+                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                }
+            },
+            keyMap: "sublime"
+        });
+        
+        // Set initial size to fill the container
+        editor.setSize("100%", "calc(100% - 40px)");
+        
+        // Current language
+        let currentLanguage = "rust";
+        
+        // Change language handler
+        function changeLanguage(language) {
+            currentLanguage = language;
+            
+            // Update tabs
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.language-tab[data-language="${language}"]`).classList.add('active');
+            
+            // Update editor mode
+            const modeMap = {
+                'rust': 'rust',
+                'python': 'python',
+                'c': 'text/x-csrc',
+                'cpp': 'text/x-c++src'
+            };
+            
+            editor.setOption('mode', modeMap[language]);
+            
+            // Clear the editor and load default example
+            loadExample('hello');
+        }
+        
+        // Settings panel toggle
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // Theme change
+        function changeTheme() {
+            const theme = document.getElementById('theme-select').value;
+            editor.setOption('theme', theme);
+        }
+        
+        // Font size change
+        function changeFontSize() {
+            const fontSize = document.getElementById('font-size').value;
+            document.querySelector('.CodeMirror').style.fontSize = fontSize;
+        }
+        
+        // Tab size change
+        function changeTabSize() {
+            const tabSize = parseInt(document.getElementById('tab-size').value);
+            editor.setOption('tabSize', tabSize);
+            editor.setOption('indentUnit', tabSize);
+        }
+        
+        // Auto-close brackets toggle
+        function toggleAutoCloseBrackets() {
+            const autoCloseBrackets = document.getElementById('auto-close-brackets').checked;
+            editor.setOption('autoCloseBrackets', autoCloseBrackets);
+        }
+        
+        // Line wrapping toggle
+        function toggleLineWrapping() {
+            const lineWrapping = document.getElementById('line-wrapping').checked;
+            editor.setOption('lineWrapping', lineWrapping);
+        }
+        
+        // Line numbers toggle
+        function toggleLineNumbers() {
+            const lineNumbers = document.getElementById('line-numbers').checked;
+            editor.setOption('lineNumbers', lineNumbers);
+        }
+        
+        // Active line highlight toggle
+        function toggleActiveLineHighlight() {
+            const highlightActiveLine = document.getElementById('highlight-active-line').checked;
+            editor.setOption('styleActiveLine', highlightActiveLine);
+        }
+        
+        // Format code
+        function formatCode() {
+            let code = editor.getValue();
+            let formatted = code;
+            
+            // Use js-beautify for formatting (basic formatting)
+            // In a real-world scenario, you might want to use language-specific formatters
+            switch(currentLanguage) {
+                case 'python':
+                    // Simple indentation for Python (not perfect but better than nothing)
+                    formatted = js_beautify(code, { 
+                        indent_size: editor.getOption('tabSize'),
+                        space_in_empty_paren: true 
+                    });
+                    break;
+                case 'rust':
+                case 'c':
+                case 'cpp':
+                    formatted = js_beautify(code, { 
+                        indent_size: editor.getOption('tabSize'),
+                        brace_style: 'collapse',
+                        keep_array_indentation: true,
+                        preserve_newlines: true,
+                        max_preserve_newlines: 2
+                    });
+                    break;
+            }
+            
+            // Set the formatted code back to the editor
+            editor.setValue(formatted);
+        }
+        
+        // Toggle comment
+        function toggleComment() {
+            editor.toggleComment();
+        }
+        
+        // Indent code
+        function indentCode() {
+            editor.execCommand('indentMore');
+        }
+        
+        // Outdent code
+        function outdentCode() {
+            editor.execCommand('indentLess');
+        }
+        
+        // Start search
+        function startSearch() {
+            editor.execCommand('find');
+        }
+        
+        // Start replace
+        function startReplace() {
+            editor.execCommand('replace');
+        }
+        
+        // Compilation and execution
+        function compileAndRun() {
+            const code = editor.getValue();
+            const input = document.getElementById('program-input').value;
+            const options = document.getElementById('compiler-options').value;
+            const outputElement = document.getElementById('output');
+            const statusElement = document.getElementById('status');
+            const compileBtn = document.getElementById('compile-btn');
+            
+            if (!code.trim()) {
+                outputElement.innerHTML = '<span class="error">Error: Please enter some code</span>';
+                return;
+            }
+            
+            outputElement.innerHTML = 'Compiling and running...';
+            statusElement.textContent = 'Processing...';
+            compileBtn.disabled = true;
+            
+            fetch('/compile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'code': code,
+                    'input': input,
+                    'language': currentLanguage,
+                    'options': options
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                outputElement.innerHTML = '';
+                
+                if (!data.success) {
+                    outputElement.innerHTML = '<span class="error">Compilation Error:</span>\n' + data.compile_error;
+                    statusElement.textContent = 'Compilation failed';
+                } else {
+                    if (data.runtime_error) {
+                        outputElement.innerHTML = '<span class="error">Runtime Error:</span>\n' + data.runtime_error;
+                        statusElement.textContent = 'Runtime error';
+                    } else if (data.output) {
+                        outputElement.innerHTML = '<span class="success">Program Output:</span>\n' + data.output;
+                        statusElement.textContent = 'Execution successful';
+                    } else {
+                        outputElement.innerHTML = '<span class="success">Program executed successfully with no output.</span>';
+                        statusElement.textContent = 'Execution successful (no output)';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                outputElement.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
+                statusElement.textContent = 'Error occurred';
+            })
+            .finally(() => {
+                compileBtn.disabled = false;
+            });
+        }
+        
+        // Load examples
+        function loadExample(example) {
+            const programInput = document.getElementById('program-input');
+            
+            // Clear the input field by default
+            programInput.value = '';
+            
+            // Examples based on language
+            const examples = {
+                'rust': {
+                    'hello': `fn main() {
+    println!("Hello, world!");
+}`,
+                    'fibonacci': `fn main() {
+    println!("Fibonacci Series (first 10 numbers):");
+    
+    let mut a = 0;
+    let mut b = 1;
+    
+    for i in 0..10 {
+        println!("Fibonacci({}) = {}", i, a);
+        let temp = a;
+        a = b;
+        b = temp + b;
+    }
+}`,
+                    'input': `use std::io;
+
+fn main() {
+    println!("What's your name?");
+    
+    let mut name = String::new();
+    io::stdin()
+        .read_line(&mut name)
+        .expect("Failed to read line");
+    
+    // Trim the newline character
+    let name = name.trim();
+    
+    println!("Hello, {}! How old are you?", name);
+    
+    let mut age = String::new();
+    io::stdin()
+        .read_line(&mut age)
+        .expect("Failed to read line");
+    
+    // Parse the age as a number
+    let age: u32 = match age.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("That's not a valid age!");
+            return;
+        }
+    };
+    
+    println!("Wow, {}! You'll be {} years old in 10 years.", name, age + 10);
+}`
+                },
+                'python': {
+                    'hello': `print("Hello, world!")`,
+                    'fibonacci': `def fibonacci(n):
+    a, b = 0, 1
+    for i in range(n):
+        print(f"Fibonacci({i}) = {a}")
+        a, b = b, a + b
+
+fibonacci(10)`,
+                    'input': `name = input("What's your name? ")
+print(f"Hello, {name}! How old are you?")
+
+try:
+    age = int(input())
+    print(f"Wow, {name}! You'll be {age + 10} years old in 10 years.")
+except ValueError:
+    print("That's not a valid age!")`
+                },
+                'c': {
+                    'hello': `#include <stdio.h>
+
+int main() {
+    printf("Hello, world!\\n");
+    return 0;
+}`,
+                    'fibonacci': `#include <stdio.h>
+
+int main() {
+    int i;
+    int a = 0, b = 1, temp;
+    
+    printf("Fibonacci Series (first 10 numbers):\\n");
+    
+    for (i = 0; i < 10; i++) {
+        printf("Fibonacci(%d) = %d\\n", i, a);
+        temp = a;
+        a = b;
+        b = temp + b;
+    }
+    
+    return 0;
+}`,
+                    'input': `#include <stdio.h>
+
+int main() {
+    char name[100];
+    int age;
+    
+    printf("What's your name? ");
+    fgets(name, sizeof(name), stdin);
+    
+    // Remove newline if present
+    int len = 0;
+    while (name[len] != '\\n' && name[len] != '\\0') len++;
+    if (name[len] == '\\n') name[len] = '\\0';
+    
+    printf("Hello, %s! How old are you? ", name);
+    
+    if (scanf("%d", &age) != 1) {
+        printf("That's not a valid age!\\n");
+        return 1;
+    }
+    
+    printf("Wow, %s! You'll be %d years old in 10 years.\\n", name, age + 10);
+    
+    return 0;
+}`
+                },
+                'cpp': {
+                    'hello': `#include <iostream>
+
+int main() {
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
+}`,
+                    'fibonacci': `#include <iostream>
+
+int main() {
+    int a = 0, b = 1, temp;
+    
+    std::cout << "Fibonacci Series (first 10 numbers):" << std::endl;
+    
+    for (int i = 0; i < 10; i++) {
+        std::cout << "Fibonacci(" << i << ") = " << a << std::endl;
+        temp = a;
+        a = b;
+        b = temp + b;
+    }
+    
+    return 0;
+}`,
+                    'input': `#include <iostream>
+#include <string>
+
+int main() {
+    std::string name;
+    int age;
+    
+    std::cout << "What's your name? ";
+    std::getline(std::cin, name);
+    
+    std::cout << "Hello, " << name << "! How old are you? ";
+    
+    if (!(std::cin >> age)) {
+        std::cout << "That's not a valid age!" << std::endl;
+        return 1;
+    }
+    
+    std::cout << "Wow, " << name << "! You'll be " << age + 10 << " years old in 10 years." << std::endl;
+    
+    return 0;
+}`
+                }
+            };
+            
+            // Set the appropriate example in the editor
+            if (examples[currentLanguage] && examples[currentLanguage][example]) {
+                editor.setValue(examples[currentLanguage][example]);
+                
+                // Add example input for the input examples
+                if (example === 'input') {
+                    switch(currentLanguage) {
+                        case 'rust':
+                        case 'python':
+                        case 'c':
+                        case 'cpp':
+                            programInput.value = "John Doe\n25";
+                            break;
+                    }
+                }
+            }
+            
+            // Clear the output when loading an example
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('status').textContent = 'Example loaded';
+        }
+        
+        // Initialize keyboard shortcuts for autocompletion
+        editor.on("keyup", function(cm, event) {
+            if (!cm.state.completionActive && 
+                event.keyCode >= 65 && event.keyCode <= 90) { // A-Z keys
+                CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
+            }
+        });
+        
+        // Handle Ctrl+Enter shortcut
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                compileAndRun();
+                event.preventDefault();
+            }
+        });
+        
+        // Close settings panel when clicking outside
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('settings-panel');
+            const settingsBtn = document.querySelector('.toolbar-btn[title="Settings"]');
+            
+            if (panel.style.display === 'block' && 
+                !panel.contains(event.target) && 
+                event.target !== settingsBtn) {
+                panel.style.display = 'none';
+            }
+        });
+        
+        // Load initial example
+        loadExample('hello');
+    </script>
+</body>
+</html>
