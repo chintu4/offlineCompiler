@@ -1,13 +1,117 @@
 import os
 import subprocess
 import tempfile
-from flask import Flask, request, render_template, jsonify, send_from_directory
+from flask import Flask, request, render_template, jsonify, send_from_directory, abort
+from sqlalchemy.orm import Session # For type hinting
+import database # Import the database module
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 
+# Database session management for Flask routes
+@app.before_request
+def before_request():
+    # This makes a new session available for each request
+    # and closes it when the request context ends.
+    # However, for Flask, it's often better to manage sessions per request explicitly
+    # or use a Flask extension like Flask-SQLAlchemy for more robust session handling.
+    # For this simple case, we'll get a session from database.py when needed.
+    pass
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    # This would be used if we attached a session to g.
+    # database.SessionLocal.remove() # If using scoped_session
+    pass
+
+
 @app.route('/', methods=['GET'])
 def index():
+    # Ensure database tables are created if they don't exist when app starts
+    # This is a good place if not running database.py directly earlier
+    # Moved to app.py or a startup script for PySide6 app to avoid issues with multiple initializations
+    # database.create_db_tables()
     return render_template('index.html')
+
+# --- API Routes for Code History ---
+
+@app.route('/api/save_code', methods=['POST'])
+def save_code_route():
+    data = request.get_json()
+    if not data or 'language' not in data or 'code' not in data:
+        return jsonify({"success": False, "error": "Missing language or code"}), 400
+
+    language = data['language']
+    code = data['code']
+    title = data.get('title') # Optional title from frontend
+
+    db_session = next(database.get_db())
+    try:
+        entry = database.add_code_history(db_session, language, code, title)
+        return jsonify({"success": True, "id": entry.id, "title": entry.title, "message": "Code saved successfully."})
+    except Exception as e:
+        db_session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        db_session.close()
+
+@app.route('/api/history', methods=['GET'])
+def get_history_route():
+    db_session = next(database.get_db())
+    try:
+        history_entries = database.get_all_code_history(db_session)
+        # Convert SQLAlchemy objects to dictionaries for JSON serialization
+        history_list = [
+            {
+                "id": entry.id,
+                "language": entry.language,
+                "code": entry.code, # Consider if sending full code always is okay, or just snippet/title
+                "title": entry.title,
+                "timestamp": entry.timestamp.isoformat()
+            } for entry in history_entries
+        ]
+        return jsonify({"success": True, "history": history_list})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        db_session.close()
+
+@app.route('/api/history/<int:entry_id>', methods=['GET'])
+def get_history_entry_route(entry_id):
+    db_session = next(database.get_db())
+    try:
+        entry = database.get_code_history_by_id(db_session, entry_id)
+        if entry:
+            return jsonify({
+                "success": True,
+                "id": entry.id,
+                "language": entry.language,
+                "code": entry.code,
+                "title": entry.title,
+                "timestamp": entry.timestamp.isoformat()
+            })
+        else:
+            return jsonify({"success": False, "error": "Entry not found"}), 404
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        db_session.close()
+
+
+@app.route('/api/history/<int:entry_id>', methods=['DELETE'])
+def delete_history_entry_route(entry_id):
+    db_session = next(database.get_db())
+    try:
+        success = database.delete_code_history_by_id(db_session, entry_id)
+        if success:
+            return jsonify({"success": True, "message": "Entry deleted successfully."})
+        else:
+            return jsonify({"success": False, "error": "Entry not found or could not be deleted."}), 404
+    except Exception as e:
+        db_session.rollback()
+        return jsonify({"success": False, "error": str(e)}), 500
+    finally:
+        db_session.close()
+
 
 @app.route('/compile', methods=['POST'])
 def compile_and_run():

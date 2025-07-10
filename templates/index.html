@@ -20,49 +20,56 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 1200px;
+            /* max-width: 1200px; */ /* Allow full width */
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+            box-sizing: border-box;
         }
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             color: #333;
+            font-size: 1.8em;
         }
-        .container {
+        .main-content-area { /* Wraps controls, editor, output */
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .container { /* Holds editor and output primarily */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+            overflow: hidden;
         }
         .editor-container {
             display: flex;
-            gap: 20px;
-            height: 70vh;
+            gap: 10px;
+            flex-grow: 1; /* Takes available vertical space */
+            overflow: hidden; /* Children manage their own scroll */
         }
         .code-section, .output-section {
             flex: 1;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* Children will scroll */
         }
         .section-title {
             font-weight: bold;
             margin-bottom: 5px;
+            padding: 5px;
+            background-color: #e9e9e9;
+            border-bottom: 1px solid #ddd;
         }
-        #code-editor {
-            width: 100%;
-            height: 100%;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 14px;
-            resize: none;
-            background-color: #fff;
-        }
+        /* textarea#code-editor is replaced by CodeMirror */
         .CodeMirror {
-            height: auto;
-            min-height: 300px;
+            flex-grow: 1; /* Makes CodeMirror fill available vertical space in its parent */
             border: 1px solid #ddd;
             border-radius: 4px;
             font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
@@ -79,6 +86,10 @@
         .CodeMirror-gutters {
             border-right: 1px solid #ddd;
             background-color: #f7f7f7;
+        }
+        .CodeMirror-scroll { /* Ensure CM scroll takes full height within its flex container */
+             min-height: 100px; /* Minimum reasonable height */
+             height: 100%;
         }
         .CodeMirror-linenumber {
             color: #999;
@@ -97,8 +108,7 @@
             background: rgba(255, 255, 255, 0.1);
         }
         #output {
-            width: 100%;
-            height: 100%;
+            flex-grow: 1; /* Allows output to fill space */
             border: 1px solid #ccc;
             border-radius: 4px;
             padding: 10px;
@@ -107,36 +117,44 @@
             background-color: #fff;
             overflow-y: auto;
             white-space: pre-wrap;
+            min-height: 100px; /* Minimum height for output */
         }
-        .controls {
+        .controls { /* Holds status and compile button */
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 5px 0; /* Reduced padding */
         }
-        .language-options {
+        .language-options { /* Holds compiler options input */
             display: flex;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Reduced margin */
             align-items: center;
         }
-        .language-options select, .language-options input {
-            padding: 8px;
+        .language-options label {
+             font-size: 0.9em;
+        }
+        .language-options input {
+            padding: 6px; /* Reduced padding */
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
+            flex-grow: 1;
         }
-        button {
-            padding: 10px 20px;
+        button { /* General button styling */
+            padding: 8px 15px; /* Slightly smaller buttons */
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px; /* Smaller font */
             transition: background-color 0.3s;
         }
         button:hover {
             background-color: #45a049;
+        }
+        #compile-btn { /* Specific styling if needed */
         }
         .error {
             color: #ff0000;
@@ -148,19 +166,22 @@
             font-style: italic;
         }
         .examples {
-            margin-top: 20px;
+            margin-top: 5px; /* Reduced margin */
+            margin-bottom: 5px;
         }
         .example-btn {
             background-color: #2196F3;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            margin-right: 5px; /* Reduced margin */
+            margin-bottom: 5px;
+            padding: 6px 10px; /* Smaller example buttons */
+            font-size: 0.85em;
         }
         .example-btn:hover {
             background-color: #0b7dda;
         }
         .language-tabs {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Reduced margin */
         }
         .language-tab {
             padding: 8px 16px;
@@ -184,21 +205,24 @@
             padding: 5px;
             background-color: #f0f0f0;
             border: 1px solid #ddd;
-            border-bottom: none;
+            border-bottom: none; /* CM will have top border */
             border-radius: 4px 4px 0 0;
         }
         .editor-toolbar-group {
             display: flex;
             gap: 5px;
         }
-        .toolbar-btn {
-            padding: 5px 10px;
+        .toolbar-btn { /* Specific for toolbar buttons */
+            padding: 5px 8px; /* Smaller toolbar buttons */
             background-color: transparent;
             color: #333;
             border: 1px solid #ccc;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 12px; /* Smaller font for toolbar */
+        }
+        .toolbar-btn i { /* Ensure icons are not too large */
+            font-size: 1em;
         }
         .toolbar-btn:hover {
             background-color: #e0e0e0;
@@ -207,8 +231,90 @@
             padding: 5px;
             border: 1px solid #ccc;
             border-radius: 3px;
-            font-size: 14px;
+            font-size: 12px; /* Smaller font for select */
         }
+        #program-input { /* Styling for the program input textarea */
+            /* height: 100px; */ /* Let flexbox manage height */
+            flex-basis: 100px; /* Initial height, can grow/shrink if code-section is flex */
+            flex-shrink: 0; /* Don't shrink if not enough space initially */
+            width: calc(100% - 22px); /* Account for padding and border */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical; /* Allow vertical resize only */
+            background-color: #fff;
+            margin-top: 5px; /* Space from code editor's title */
+        }
+
+        /* History Panel Specific Styles */
+        #history-panel {
+            position: fixed; /* Or absolute if body is relative */
+            top: 10px; /* Align with top padding */
+            right: 10px;
+            width: 300px; /* Adjust as needed */
+            height: calc(100vh - 20px); /* Full height minus padding */
+            background: #f9f9f9;
+            border-left: 1px solid #ccc;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #history-panel h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        #history-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        #history-list li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        #history-list li:hover {
+            background-color: #e6f7ff;
+        }
+        #history-list li .history-lang {
+            font-weight: bold;
+            color: #007bff;
+            margin-right: 5px;
+        }
+        #history-list li .history-timestamp {
+            font-size: 0.8em;
+            color: #777;
+            display: block;
+        }
+        #history-list li .delete-history-btn {
+            float: right;
+            color: #ff4d4d;
+            background: none;
+            border: none;
+            padding: 0 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        #history-list li .delete-history-btn:hover {
+            color: #cc0000;
+        }
+        #history-panel-toggle-btn { /* Button to toggle history panel visibility if not using PySide6 dock */
+            /* Style if you add a button to hide/show this panel from HTML itself */
+        }
+
         .split-view {
             display: flex;
             gap: 10px;
@@ -266,123 +372,119 @@
     </style>
 </head>
 <body>
-    <h1>Local Code Compiler</h1>    <div class="container">
-        <div class="language-tabs">
-            <div class="language-tab active" data-language="rust" onclick="changeLanguage('rust')">Rust</div>
-            <div class="language-tab" data-language="python" onclick="changeLanguage('python')">Python</div>
-            <div class="language-tab" data-language="c" onclick="changeLanguage('c')">C</div>
-            <div class="language-tab" data-language="cpp" onclick="changeLanguage('cpp')">C++</div>
-        </div>
-        
-        <div class="editor-toolbar">
-            <div class="editor-toolbar-group">
-                <button class="toolbar-btn" title="Undo (Ctrl+Z)" onclick="editor.undo()"><i class="fas fa-undo"></i></button>
-                <button class="toolbar-btn" title="Redo (Ctrl+Y)" onclick="editor.redo()"><i class="fas fa-redo"></i></button>
-                <button class="toolbar-btn" title="Format Code" onclick="formatCode()"><i class="fas fa-align-left"></i></button>
-                <button class="toolbar-btn" title="Comment Selection (Ctrl+/)" onclick="toggleComment()"><i class="fas fa-comment"></i></button>
-                <button class="toolbar-btn" title="Indent (Tab)" onclick="indentCode()"><i class="fas fa-indent"></i></button>
-                <button class="toolbar-btn" title="Outdent (Shift+Tab)" onclick="outdentCode()"><i class="fas fa-outdent"></i></button>
-                <button class="toolbar-btn" title="Find (Ctrl+F)" onclick="startSearch()"><i class="fas fa-search"></i></button>
-                <button class="toolbar-btn" title="Find and Replace (Ctrl+H)" onclick="startReplace()"><i class="fas fa-exchange-alt"></i></button>
+    <h1>Local Code Compiler</h1>
+    <!-- History Panel - This will be shown/hidden or managed by PySide6 Dock -->
+    <!-- For pure web testing, you might add a toggle button -->
+    <div id="history-panel" style="display: none;"> <!-- Initially hidden, PySide6 will manage visibility -->
+        <h3>Code History <button onclick="fetchHistory(true)" style="font-size:0.8em; padding: 2px 5px; margin-left: 10px;">Refresh</button></h3>
+        <ul id="history-list">
+            <!-- History items will be populated here by JavaScript -->
+        </ul>
+    </div>
+
+    <div class="main-content-area">
+        <div class="container">
+            <div class="language-tabs">
+                <div class="language-tab active" data-language="rust" onclick="changeLanguage('rust')">Rust</div>
+                <div class="language-tab" data-language="python" onclick="changeLanguage('python')">Python</div>
+                <div class="language-tab" data-language="c" onclick="changeLanguage('c')">C</div>
+                <div class="language-tab" data-language="cpp" onclick="changeLanguage('cpp')">C++</div>
             </div>
-            <div class="editor-toolbar-group">
-                <select class="toolbar-select" id="theme-select" onchange="changeTheme()">
-                    <option value="default">Default Theme</option>
-                    <option value="monokai">Monokai</option>
-                    <option value="dracula">Dracula</option>
-                    <option value="material">Material</option>
-                    <option value="nord">Nord</option>
-                    <option value="solarized light">Solarized Light</option>
-                    <option value="solarized dark">Solarized Dark</option>
-                </select>
-                <select class="toolbar-select" id="font-size" onchange="changeFontSize()">
-                    <option value="12px">12px</option>
-                    <option value="14px" selected>14px</option>
-                    <option value="16px">16px</option>
-                    <option value="18px">18px</option>
-                    <option value="20px">20px</option>
-                </select>
-                <button class="toolbar-btn" title="Settings" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
-            </div>
-        </div>
-        
-        <div id="settings-panel" class="settings-panel">
-            <div class="settings-group">
-                <div class="settings-title">Editor Settings</div>
-                <div class="settings-row">
-                    <label for="tab-size">Tab Size:</label>
-                    <select id="tab-size" onchange="changeTabSize()">
-                        <option value="2">2 spaces</option>
-                        <option value="4" selected>4 spaces</option>
-                        <option value="8">8 spaces</option>
+
+            <div class="editor-toolbar">
+                <div class="editor-toolbar-group">
+                    <button class="toolbar-btn" title="Undo (Ctrl+Z)" onclick="editor.undo()"><i class="fas fa-undo"></i></button>
+                    <button class="toolbar-btn" title="Redo (Ctrl+Y)" onclick="editor.redo()"><i class="fas fa-redo"></i></button>
+                    <button class="toolbar-btn" title="Format Code" onclick="formatCode()"><i class="fas fa-align-left"></i></button>
+                    <button class="toolbar-btn" title="Comment (Ctrl+/)" onclick="toggleComment()"><i class="fas fa-comment"></i></button>
+                    <button class="toolbar-btn" title="Save Code" onclick="saveCurrentCode()"><i class="fas fa-save"></i></button>
+                </div>
+                <div class="editor-toolbar-group">
+                    <select class="toolbar-select" id="theme-select" onchange="changeTheme()">
+                        <option value="default">Default</option>
+                        <option value="monokai">Monokai</option>
+                        <option value="dracula" selected>Dracula</option>
+                        <option value="material">Material</option>
+                        <option value="nord">Nord</option>
+                        <option value="solarized light">Solarized Light</option>
+                        <option value="solarized dark">Solarized Dark</option>
                     </select>
-                </div>
-                <div class="settings-row">
-                    <label for="auto-close-brackets">Auto-close brackets:</label>
-                    <input type="checkbox" id="auto-close-brackets" checked onchange="toggleAutoCloseBrackets()">
-                </div>
-                <div class="settings-row">
-                    <label for="line-wrapping">Line wrapping:</label>
-                    <input type="checkbox" id="line-wrapping" checked onchange="toggleLineWrapping()">
-                </div>
-                <div class="settings-row">
-                    <label for="line-numbers">Line numbers:</label>
-                    <input type="checkbox" id="line-numbers" checked onchange="toggleLineNumbers()">
-                </div>
-                <div class="settings-row">
-                    <label for="highlight-active-line">Highlight active line:</label>
-                    <input type="checkbox" id="highlight-active-line" checked onchange="toggleActiveLineHighlight()">
+                    <select class="toolbar-select" id="font-size" onchange="changeFontSize()">
+                        <option value="12px">12px</option>
+                        <option value="14px" selected>14px</option>
+                        <option value="16px">16px</option>
+                        <option value="18px">18px</option>
+                    </select>
+                    <button class="toolbar-btn" title="Settings" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
                 </div>
             </div>
-            <div class="settings-group">
-                <div class="settings-title">Keyboard Shortcuts</div>
-                <div style="font-size: 0.9em; line-height: 1.4;">
-                    <div>Ctrl+Space: Autocomplete</div>
-                    <div>Ctrl+F: Find</div>
-                    <div>Ctrl+H: Replace</div>
-                    <div>Ctrl+G: Go to Line</div>
-                    <div>Ctrl+/: Toggle Comment</div>
-                    <div>Alt+F: Format Code</div>
-                    <div>Ctrl+[: Indent</div>
-                    <div>Ctrl+]: Outdent</div>
+
+            <div id="settings-panel" class="settings-panel">
+                <!-- Settings content remains largely the same, ensure it's not overlapping -->
+                 <div class="settings-group">
+                    <div class="settings-title">Editor Settings</div>
+                    <div class="settings-row">
+                        <label for="tab-size">Tab Size:</label>
+                        <select id="tab-size" onchange="changeTabSize()">
+                            <option value="2">2</option>
+                            <option value="4" selected>4</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <label for="auto-close-brackets">Auto-close brackets:</label>
+                        <input type="checkbox" id="auto-close-brackets" checked onchange="toggleAutoCloseBrackets()">
+                    </div>
+                    <div class="settings-row">
+                        <label for="line-wrapping">Line wrapping:</label>
+                        <input type="checkbox" id="line-wrapping" checked onchange="toggleLineWrapping()">
+                    </div>
+                    <div class="settings-row">
+                        <label for="line-numbers">Line numbers:</label>
+                        <input type="checkbox" id="line-numbers" checked onchange="toggleLineNumbers()">
+                    </div>
+                     <div class="settings-row">
+                        <label for="highlight-active-line">Highlight active line:</label>
+                        <input type="checkbox" id="highlight-active-line" checked onchange="toggleActiveLineHighlight()">
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="language-options">
-            <label for="compiler-options">Compiler Options:</label>
-            <input type="text" id="compiler-options" placeholder="e.g. -O2 -Wall">
-        </div>
-        
-        <div class="examples">
-            <button class="example-btn" onclick="loadExample('hello')">Hello World</button>
-            <button class="example-btn" onclick="loadExample('fibonacci')">Fibonacci</button>
-            <button class="example-btn" onclick="loadExample('input')">User Input</button>
-        </div>
-        
-        <div class="editor-container">
-            <div class="code-section">
-                <div class="section-title">Code:</div>
-                <textarea id="code-editor" placeholder="Enter your code here..."></textarea>
-                <div class="section-title" style="margin-top: 10px;">Program Input:</div>
-                <textarea id="program-input" placeholder="Enter input for your program here..." style="height: 100px; width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 14px; resize: none; background-color: #fff;"></textarea>
+
+            <div class="language-options">
+                <label for="compiler-options">Compiler Options:</label>
+                <input type="text" id="compiler-options" placeholder="e.g. -O2 -Wall">
             </div>
-            <div class="output-section">
-                <div class="section-title">Output:</div>
-                <div id="output"></div>
+
+            <div class="examples">
+                <button class="example-btn" onclick="loadExample('hello')">Hello</button>
+                <button class="example-btn" onclick="loadExample('fibonacci')">Fibonacci</button>
+                <button class="example-btn" onclick="loadExample('input')">Input</button>
+            </div>
+
+            <div class="editor-container">
+                <div class="code-section">
+                    <div class="section-title">Code Editor</div>
+                    <textarea id="code-editor"></textarea> <!-- Placeholder removed, CM will populate -->
+                    <div class="section-title" style="margin-top: 5px;">Program Input</div>
+                    <textarea id="program-input" placeholder="Enter input for your program..."></textarea>
+                </div>
+                <div class="output-section">
+                    <div class="section-title">Output</div>
+                    <div id="output">Output will appear here...</div>
+                </div>
+            </div>
+            <div class="controls">
+                <div id="status" class="status">Ready</div>
+                <button id="compile-btn" onclick="compileAndRun()">Compile & Run (Ctrl+Enter)</button>
             </div>
         </div>
-        <div class="controls">
-            <div id="status" class="status">Ready</div>
-            <button id="compile-btn" onclick="compileAndRun()">Compile & Run</button>
-        </div>
-    </div>    <!-- CodeMirror JS -->
+    </div>
+    <!-- CodeMirror JS and Addons -->
+    <!-- All script imports (CodeMirror, addons, beautify) remain the same -->
     <script src="{{ url_for('static', filename='js/codemirror/codemirror.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/mode/rust/rust.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/mode/python/python.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/mode/clike/clike.min.js') }}"></script>
-    
-    <!-- CodeMirror Addons -->
     <script src="{{ url_for('static', filename='js/codemirror/addon/edit/closebrackets.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/addon/edit/matchbrackets.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/addon/edit/closetag.min.js') }}"></script>
@@ -402,465 +504,413 @@
     <script src="{{ url_for('static', filename='js/codemirror/addon/display/placeholder.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/addon/edit/trailingspace.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/codemirror/keymap/sublime.min.js') }}"></script>
-    
-    <!-- Additional Libraries -->
     <script src="{{ url_for('static', filename='js/beautify/beautify.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/beautify/beautify-css.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/beautify/beautify-html.min.js') }}"></script>
     
     <script>
-        // Initialize CodeMirror
-        let editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
-            lineNumbers: true,
-            indentUnit: 4,
-            tabSize: 4,
-            indentWithTabs: false,
-            mode: "rust",
-            theme: "default",
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            styleActiveLine: true,
-            lineWrapping: true,
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            extraKeys: {
-                "Ctrl-Space": "autocomplete",
-                "Ctrl-/": "toggleComment",
-                "Alt-F": formatCode,
-                "Ctrl-J": "toMatchingTag",
-                "Ctrl-Q": function(cm) { cm.foldCode(cm.getCursor()); },
-                "Ctrl-Enter": compileAndRun,
-                "F11": function(cm) {
-                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        let editor; // Declare editor globally
+        let currentLanguage = "rust"; // Default language
+
+        document.addEventListener('DOMContentLoaded', function() {
+            editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+                lineNumbers: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false, // Use spaces
+                mode: "rust",
+                theme: "dracula", // Default theme
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                styleActiveLine: true,
+                lineWrapping: true,
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys: {
+                    "Ctrl-Space": "autocomplete",
+                    "Ctrl-/": "toggleComment",
+                    "Alt-F": formatCode, // Assuming formatCode is defined
+                    "Ctrl-J": "toMatchingTag",
+                    "Ctrl-Q": function(cm) { cm.foldCode(cm.getCursor()); },
+                    "Ctrl-Enter": compileAndRun, // Assuming compileAndRun is defined
+                    "F11": function(cm) { cm.setOption("fullScreen", !cm.getOption("fullScreen")); },
+                    "Esc": function(cm) { if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false); }
                 },
-                "Esc": function(cm) {
-                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-                }
-            },
-            keyMap: "sublime"
-        });
-        
-        // Set initial size to fill the container
-        editor.setSize("100%", "calc(100% - 40px)");
-        
-        // Current language
-        let currentLanguage = "rust";
-        
-        // Change language handler
-        function changeLanguage(language) {
-            currentLanguage = language;
-            
-            // Update tabs
-            document.querySelectorAll('.language-tab').forEach(tab => {
-                tab.classList.remove('active');
+                keyMap: "sublime"
             });
-            document.querySelector(`.language-tab[data-language="${language}"]`).classList.add('active');
-            
-            // Update editor mode
-            const modeMap = {
-                'rust': 'rust',
-                'python': 'python',
-                'c': 'text/x-csrc',
-                'cpp': 'text/x-c++src'
-            };
-            
-            editor.setOption('mode', modeMap[language]);
-            
-            // Clear the editor and load default example
-            loadExample('hello');
-        }
+
+            // Adjust editor size dynamically if needed, or use CSS flex-grow.
+            // Initial size set via CSS flex-grow on .CodeMirror should work.
+            // editor.setSize("100%", "100%"); // This might override flex, be cautious
+
+            changeTheme(); // Apply selected theme from dropdown
+            changeFontSize(); // Apply selected font size
+            loadExample('hello'); // Load initial example
+
+            // Fetch initial history if the panel is visible or integrated via PySide
+            // For PySide, the refresh button in app.py's UI will call populate_history_list,
+            // which in turn might trigger a JS call if needed, or PySide directly fills its QListWidget.
+            // If this HTML panel is used directly (e.g. for web testing):
+            if (document.getElementById('history-panel').style.display !== 'none') {
+                 fetchHistory();
+            }
+
+            // Add event listener for theme select
+            document.getElementById('theme-select').addEventListener('change', changeTheme);
+             // Add event listener for font size select
+            document.getElementById('font-size').addEventListener('change', changeFontSize);
+
+
+        }); // End DOMContentLoaded
+
+        // --- Communication with PySide6 App (if needed) ---
+        // This function can be called from PySide6 to update the editor
+        window.setCodeFromHost = function(language, code) {
+            if (language !== currentLanguage) {
+                changeLanguage(language, false); // false to not load default example
+            }
+            editor.setValue(code);
+            // Optionally, also update the language dropdown/tabs if they exist in HTML
+            const langTab = document.querySelector(`.language-tab[data-language="${language}"]`);
+            if (langTab) {
+                 document.querySelectorAll('.language-tab').forEach(tab => tab.classList.remove('active'));
+                 langTab.classList.add('active');
+            }
+             // Set CodeMirror mode
+            const modeMap = {'rust': 'rust', 'python': 'python', 'c': 'text/x-csrc', 'cpp': 'text/x-c++src'};
+            editor.setOption('mode', modeMap[language] || 'text/plain');
+        };
         
-        // Settings panel toggle
+        // This function can be called from PySide6 to trigger a history refresh in the webview's panel
+        // (if the history panel is part of the HTML and not a separate QDockWidget)
+        window.refreshWebViewHistory = function() {
+            fetchHistory(true); // true to force refresh
+        }
+
+        // --- UI Interaction Functions ---
+        function changeLanguage(language, loadDefaultExample = true) {
+            currentLanguage = language;
+            document.querySelectorAll('.language-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`.language-tab[data-language="${language}"]`).classList.add('active');
+            const modeMap = {'rust': 'rust', 'python': 'python', 'c': 'text/x-csrc', 'cpp': 'text/x-c++src'};
+            editor.setOption('mode', modeMap[language] || 'text/plain');
+            if (loadDefaultExample) {
+                loadExample('hello');
+            }
+        }
+
         function toggleSettings() {
             const panel = document.getElementById('settings-panel');
             panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
         }
-        
-        // Theme change
+
         function changeTheme() {
             const theme = document.getElementById('theme-select').value;
-            editor.setOption('theme', theme);
+            if (editor) editor.setOption('theme', theme);
         }
-        
-        // Font size change
+
         function changeFontSize() {
             const fontSize = document.getElementById('font-size').value;
-            document.querySelector('.CodeMirror').style.fontSize = fontSize;
+            // Ensure CodeMirror's parent exists and then its wrapper for styling
+            if (editor && editor.getWrapperElement()) {
+                 editor.getWrapperElement().style.fontSize = fontSize;
+                 editor.refresh(); // Important after style changes
+            }
         }
         
-        // Tab size change
         function changeTabSize() {
             const tabSize = parseInt(document.getElementById('tab-size').value);
-            editor.setOption('tabSize', tabSize);
-            editor.setOption('indentUnit', tabSize);
-        }
-        
-        // Auto-close brackets toggle
-        function toggleAutoCloseBrackets() {
-            const autoCloseBrackets = document.getElementById('auto-close-brackets').checked;
-            editor.setOption('autoCloseBrackets', autoCloseBrackets);
-        }
-        
-        // Line wrapping toggle
-        function toggleLineWrapping() {
-            const lineWrapping = document.getElementById('line-wrapping').checked;
-            editor.setOption('lineWrapping', lineWrapping);
-        }
-        
-        // Line numbers toggle
-        function toggleLineNumbers() {
-            const lineNumbers = document.getElementById('line-numbers').checked;
-            editor.setOption('lineNumbers', lineNumbers);
-        }
-        
-        // Active line highlight toggle
-        function toggleActiveLineHighlight() {
-            const highlightActiveLine = document.getElementById('highlight-active-line').checked;
-            editor.setOption('styleActiveLine', highlightActiveLine);
-        }
-        
-        // Format code
-        function formatCode() {
-            let code = editor.getValue();
-            let formatted = code;
-            
-            // Use js-beautify for formatting (basic formatting)
-            // In a real-world scenario, you might want to use language-specific formatters
-            switch(currentLanguage) {
-                case 'python':
-                    // Simple indentation for Python (not perfect but better than nothing)
-                    formatted = js_beautify(code, { 
-                        indent_size: editor.getOption('tabSize'),
-                        space_in_empty_paren: true 
-                    });
-                    break;
-                case 'rust':
-                case 'c':
-                case 'cpp':
-                    formatted = js_beautify(code, { 
-                        indent_size: editor.getOption('tabSize'),
-                        brace_style: 'collapse',
-                        keep_array_indentation: true,
-                        preserve_newlines: true,
-                        max_preserve_newlines: 2
-                    });
-                    break;
+            if (editor) {
+                editor.setOption('tabSize', tabSize);
+                editor.setOption('indentUnit', tabSize);
             }
+        }
+
+        function toggleAutoCloseBrackets() {
+            if(editor) editor.setOption('autoCloseBrackets', document.getElementById('auto-close-brackets').checked);
+        }
+
+        function toggleLineWrapping() {
+            if(editor) editor.setOption('lineWrapping', document.getElementById('line-wrapping').checked);
+        }
+
+        function toggleLineNumbers() {
+             if(editor) editor.setOption('lineNumbers', document.getElementById('line-numbers').checked);
+        }
+        
+        function toggleActiveLineHighlight() {
+            if(editor) editor.setOption('styleActiveLine', document.getElementById('highlight-active-line').checked);
+        }
+
+
+        function formatCode() {
+            if (!editor) return;
+            // Basic formatting, js-beautify might not be ideal for compiled languages
+            // For Python, it's okay. For C/C++/Rust, server-side formatting is better.
+            let code = editor.getValue();
+            let options = { indent_size: editor.getOption("tabSize"), indent_with_tabs: editor.getOption("indentWithTabs") };
             
-            // Set the formatted code back to the editor
-            editor.setValue(formatted);
+            if (typeof js_beautify !== 'undefined') {
+                 if (currentLanguage === 'python' || currentLanguage === 'javascript') { // Assuming js_beautify handles python somewhat
+                    code = js_beautify(code, options);
+                } else if (currentLanguage === 'html') {
+                    code = html_beautify(code, options);
+                } else if (currentLanguage === 'css') {
+                    code = css_beautify(code, options);
+                }
+                // For C, C++, Rust, js-beautify is not suitable.
+                // Consider a message or disabling for these.
+            }
+            editor.setValue(code);
         }
-        
-        // Toggle comment
+
         function toggleComment() {
-            editor.toggleComment();
+            if (editor) editor.toggleComment();
         }
         
-        // Indent code
-        function indentCode() {
-            editor.execCommand('indentMore');
-        }
-        
-        // Outdent code
-        function outdentCode() {
-            editor.execCommand('indentLess');
-        }
-        
-        // Start search
-        function startSearch() {
-            editor.execCommand('find');
-        }
-        
-        // Start replace
-        function startReplace() {
-            editor.execCommand('replace');
-        }
-        
-        // Compilation and execution
+        // Indent/Outdent functions (already in extraKeys, but can be called from buttons too)
+        function indentCode() { if(editor) editor.execCommand('indentMore'); }
+        function outdentCode() { if(editor) editor.execCommand('indentLess'); }
+        function startSearch() { if(editor) editor.execCommand('find'); }
+        function startReplace() { if(editor) editor.execCommand('replace'); }
+
+
+        // --- Compilation and Execution ---
         function compileAndRun() {
+            if (!editor) return;
             const code = editor.getValue();
             const input = document.getElementById('program-input').value;
             const options = document.getElementById('compiler-options').value;
             const outputElement = document.getElementById('output');
             const statusElement = document.getElementById('status');
             const compileBtn = document.getElementById('compile-btn');
-            
+
             if (!code.trim()) {
-                outputElement.innerHTML = '<span class="error">Error: Please enter some code</span>';
+                outputElement.innerHTML = '<span class="error">Error: Code is empty.</span>';
                 return;
             }
-            
-            outputElement.innerHTML = 'Compiling and running...';
-            statusElement.textContent = 'Processing...';
+
+            outputElement.textContent = 'Processing...';
+            statusElement.textContent = 'Compiling & Running...';
             compileBtn.disabled = true;
-            
+
             fetch('/compile', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'code': code,
-                    'input': input,
-                    'language': currentLanguage,
-                    'options': options
-                })
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({ code, input, language: currentLanguage, options })
             })
             .then(response => response.json())
             .then(data => {
-                outputElement.innerHTML = '';
-                
-                if (!data.success) {
-                    outputElement.innerHTML = '<span class="error">Compilation Error:</span>\n' + data.compile_error;
-                    statusElement.textContent = 'Compilation failed';
+                outputElement.innerHTML = ''; // Clear previous output
+                if (!data.success && data.compile_error) {
+                    outputElement.innerHTML = `<span class="error">Compilation Error:</span><pre>${data.compile_error}</pre>`;
+                    statusElement.textContent = 'Compilation Failed';
+                } else if (data.runtime_error) {
+                    outputElement.innerHTML = `<span class="error">Runtime Error:</span><pre>${data.runtime_error}</pre>`;
+                     if(data.output) outputElement.innerHTML += `<br><span class="success">Output (before error):</span><pre>${data.output}</pre>`;
+                    statusElement.textContent = 'Runtime Error';
+                } else if (data.success) {
+                    outputElement.innerHTML = `<span class="success">Output:</span><pre>${data.output || '(No output)'}</pre>`;
+                    statusElement.textContent = 'Execution Successful';
                 } else {
-                    if (data.runtime_error) {
-                        outputElement.innerHTML = '<span class="error">Runtime Error:</span>\n' + data.runtime_error;
-                        statusElement.textContent = 'Runtime error';
-                    } else if (data.output) {
-                        outputElement.innerHTML = '<span class="success">Program Output:</span>\n' + data.output;
-                        statusElement.textContent = 'Execution successful';
-                    } else {
-                        outputElement.innerHTML = '<span class="success">Program executed successfully with no output.</span>';
-                        statusElement.textContent = 'Execution successful (no output)';
-                    }
+                     outputElement.innerHTML = `<span class="error">Unknown error.</span><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    statusElement.textContent = 'Error';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                outputElement.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
-                statusElement.textContent = 'Error occurred';
+                outputElement.innerHTML = `<span class="error">Network or Server Error:</span><pre>${error.message}</pre>`;
+                statusElement.textContent = 'Request Failed';
+                console.error('Compile/Run Error:', error);
             })
-            .finally(() => {
-                compileBtn.disabled = false;
+            .finally(() => { compileBtn.disabled = false; });
+        }
+
+        // --- Code History Functions ---
+        function saveCurrentCode() {
+            if (!editor) return;
+            const code = editor.getValue();
+            const language = currentLanguage;
+            if (!code.trim()) {
+                alert("Code is empty, nothing to save.");
+                return;
+            }
+            // Simple title from first line, or prompt user
+            let title = code.split('\n')[0].trim().substring(0, 50) || "Untitled Snippet";
+            // title = prompt("Enter a title for this snippet:", title) || title; // Optional: prompt for title
+
+            fetch('/api/save_code', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ language, code, title })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Code saved as: ${data.title} (ID: ${data.id})`);
+                    fetchHistory(true); // Refresh history list if visible
+                    // PySide6 app might also want to know to refresh its QListWidget
+                    if (window.qt && window.qt.postMessage) { // Check if in QWebEngineView with channel
+                        window.qt.postMessage(JSON.stringify({ type: "historyUpdated" }));
+                    }
+                } else {
+                    alert("Error saving code: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => {
+                alert("Failed to save code: " + error.message);
+                console.error('Save Code Error:', error);
             });
         }
-        
-        // Load examples
-        function loadExample(example) {
-            const programInput = document.getElementById('program-input');
-            
-            // Clear the input field by default
-            programInput.value = '';
-            
-            // Examples based on language
-            const examples = {
-                'rust': {
-                    'hello': `fn main() {
-    println!("Hello, world!");
-}`,
-                    'fibonacci': `fn main() {
-    println!("Fibonacci Series (first 10 numbers):");
-    
-    let mut a = 0;
-    let mut b = 1;
-    
-    for i in 0..10 {
-        println!("Fibonacci({}) = {}", i, a);
-        let temp = a;
-        a = b;
-        b = temp + b;
-    }
-}`,
-                    'input': `use std::io;
 
-fn main() {
-    println!("What's your name?");
-    
-    let mut name = String::new();
-    io::stdin()
-        .read_line(&mut name)
-        .expect("Failed to read line");
-    
-    // Trim the newline character
-    let name = name.trim();
-    
-    println!("Hello, {}! How old are you?", name);
-    
-    let mut age = String::new();
-    io::stdin()
-        .read_line(&mut age)
-        .expect("Failed to read line");
-    
-    // Parse the age as a number
-    let age: u32 = match age.trim().parse() {
-        Ok(num) => num,
-        Err(_) => {
-            println!("That's not a valid age!");
-            return;
+        function fetchHistory(forceRefresh = false) {
+            // This is for the HTML history panel. PySide6 app will use its own mechanism.
+            const historyList = document.getElementById('history-list');
+            if (!historyList || (historyList.children.length > 0 && !forceRefresh && historyList.firstChild.textContent !== "Loading...")) {
+                 // return; // Already populated and not forcing refresh
+            }
+            if(historyList) historyList.innerHTML = '<li>Loading...</li>';
+
+            fetch('/api/history')
+            .then(response => response.json())
+            .then(data => {
+                if(historyList) historyList.innerHTML = ''; // Clear loading or old items
+                if (data.success && data.history) {
+                    if (data.history.length === 0) {
+                        if(historyList) historyList.innerHTML = '<li>No history yet.</li>';
+                        return;
+                    }
+                    data.history.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <span class="history-lang">${item.language}</span> ${item.title || 'Untitled'}
+                            <span class="history-timestamp">${new Date(item.timestamp).toLocaleString()}</span>
+                            <button class="delete-history-btn" onclick="deleteHistoryItem(${item.id}, event)">&times;</button>
+                        `;
+                        li.onclick = (event) => {
+                            // Prevent loading if delete button was clicked
+                            if (event.target.classList.contains('delete-history-btn')) return;
+                            loadHistoryItem(item.id);
+                        };
+                        if(historyList) historyList.appendChild(li);
+                    });
+                } else {
+                    if(historyList) historyList.innerHTML = `<li>Error loading history: ${data.error || 'Unknown error'}</li>`;
+                }
+            })
+            .catch(error => {
+                if(historyList) historyList.innerHTML = `<li>Network error loading history: ${error.message}</li>`;
+                console.error('Fetch History Error:', error);
+            });
         }
-    };
-    
-    println!("Wow, {}! You'll be {} years old in 10 years.", name, age + 10);
-}`
+
+        function loadHistoryItem(id) {
+            fetch(`/api/history/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.language !== currentLanguage) {
+                        changeLanguage(data.language, false); // Switch language without loading default example
+                    }
+                    editor.setValue(data.code);
+                    // Update language selector/tabs if needed
+                    document.getElementById('language-select') && (document.getElementById('language-select').value = data.language);
+                    // Alert or status update
+                    document.getElementById('status').textContent = `Loaded '${data.title}' from history.`;
+                } else {
+                    alert("Error loading history item: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => {
+                alert("Failed to load history item: " + error.message);
+                console.error('Load History Item Error:', error);
+            });
+        }
+
+        function deleteHistoryItem(id, event) {
+            event.stopPropagation(); // Prevent li onclick from firing
+            if (!confirm("Are you sure you want to delete this history item?")) return;
+
+            fetch(`/api/history/${id}`, { method: 'DELETE' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("History item deleted.");
+                    fetchHistory(true); // Refresh list
+                     if (window.qt && window.qt.postMessage) {
+                        window.qt.postMessage(JSON.stringify({ type: "historyUpdated" }));
+                    }
+                } else {
+                    alert("Error deleting history item: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => {
+                alert("Failed to delete history item: " + error.message);
+                console.error('Delete History Item Error:', error);
+            });
+        }
+
+
+        // --- Example Loading ---
+        function loadExample(exampleName) {
+            if (!editor) return;
+            const programInputEl = document.getElementById('program-input');
+            programInputEl.value = ''; // Clear input by default
+
+            const examples = { /* ... examples remain the same ... */
+                'rust': {
+                    'hello': `fn main() {\n    println!("Hello, world!");\n}`,
+                    'fibonacci': `fn main() {\n    println!("Fibonacci Series (first 10 numbers):");\n    let mut a = 0;\n    let mut b = 1;\n    for i in 0..10 {\n        println!("Fibonacci({}) = {}", i, a);\n        let temp = a;\n        a = b;\n        b = temp + b;\n    }\n}`,
+                    'input': `use std::io;\n\nfn main() {\n    println!("What's your name?");\n    let mut name = String::new();\n    io::stdin().read_line(&mut name).expect("Failed to read line");\n    let name = name.trim();\n    println!("Hello, {}! How old are you?", name);\n    let mut age = String::new();\n    io::stdin().read_line(&mut age).expect("Failed to read line");\n    let age: u32 = match age.trim().parse() {\n        Ok(num) => num,\n        Err(_) => {\n            println!("That's not a valid age!");\n            return;\n        }\n    };\n    println!("Wow, {}! You'll be {} years old in 10 years.", name, age + 10);\n}`
                 },
                 'python': {
                     'hello': `print("Hello, world!")`,
-                    'fibonacci': `def fibonacci(n):
-    a, b = 0, 1
-    for i in range(n):
-        print(f"Fibonacci({i}) = {a}")
-        a, b = b, a + b
-
-fibonacci(10)`,
-                    'input': `name = input("What's your name? ")
-print(f"Hello, {name}! How old are you?")
-
-try:
-    age = int(input())
-    print(f"Wow, {name}! You'll be {age + 10} years old in 10 years.")
-except ValueError:
-    print("That's not a valid age!")`
+                    'fibonacci': `def fibonacci(n):\n    a, b = 0, 1\n    for i in range(n):\n        print(f"Fibonacci({i}) = {a}")\n        a, b = b, a + b\n\nfibonacci(10)`,
+                    'input': `name = input("What's your name? ")\nprint(f"Hello, {name}! How old are you?")\n\ntry:\n    age = int(input("Enter your age: "))\n    print(f"Wow, {name}! You'll be {age + 10} years old in 10 years.")\nexcept ValueError:\n    print("That's not a valid age!")`
                 },
                 'c': {
-                    'hello': `#include <stdio.h>
-
-int main() {
-    printf("Hello, world!\\n");
-    return 0;
-}`,
-                    'fibonacci': `#include <stdio.h>
-
-int main() {
-    int i;
-    int a = 0, b = 1, temp;
-    
-    printf("Fibonacci Series (first 10 numbers):\\n");
-    
-    for (i = 0; i < 10; i++) {
-        printf("Fibonacci(%d) = %d\\n", i, a);
-        temp = a;
-        a = b;
-        b = temp + b;
-    }
-    
-    return 0;
-}`,
-                    'input': `#include <stdio.h>
-
-int main() {
-    char name[100];
-    int age;
-    
-    printf("What's your name? ");
-    fgets(name, sizeof(name), stdin);
-    
-    // Remove newline if present
-    int len = 0;
-    while (name[len] != '\\n' && name[len] != '\\0') len++;
-    if (name[len] == '\\n') name[len] = '\\0';
-    
-    printf("Hello, %s! How old are you? ", name);
-    
-    if (scanf("%d", &age) != 1) {
-        printf("That's not a valid age!\\n");
-        return 1;
-    }
-    
-    printf("Wow, %s! You'll be %d years old in 10 years.\\n", name, age + 10);
-    
-    return 0;
-}`
+                    'hello': `#include <stdio.h>\n\nint main() {\n    printf("Hello, world!\\n");\n    return 0;\n}`,
+                    'fibonacci': `#include <stdio.h>\n\nint main() {\n    int i;\n    int a = 0, b = 1, temp;\n    printf("Fibonacci Series (first 10 numbers):\\n");\n    for (i = 0; i < 10; i++) {\n        printf("Fibonacci(%d) = %d\\n", i, a);\n        temp = a;\n        a = b;\n        b = temp + b;\n    }\n    return 0;\n}`,
+                    'input': `#include <stdio.h>\n#include <string.h> // For strlen, strcspn\n\nint main() {\n    char name[100];\n    int age;\n    printf("What's your name? ");\n    fgets(name, sizeof(name), stdin);\n    name[strcspn(name, "\\n")] = 0; // Remove trailing newline\n    printf("Hello, %s! How old are you? ", name);\n    if (scanf("%d", &age) != 1) {\n        printf("That's not a valid age!\\n");\n        // Clear stdin buffer after invalid scanf\n        int c; while ((c = getchar()) != '\\n' && c != EOF);\n        return 1;\n    }\n    printf("Wow, %s! You'll be %d years old in 10 years.\\n", name, age + 10);\n    return 0;\n}`
                 },
                 'cpp': {
-                    'hello': `#include <iostream>
-
-int main() {
-    std::cout << "Hello, world!" << std::endl;
-    return 0;
-}`,
-                    'fibonacci': `#include <iostream>
-
-int main() {
-    int a = 0, b = 1, temp;
-    
-    std::cout << "Fibonacci Series (first 10 numbers):" << std::endl;
-    
-    for (int i = 0; i < 10; i++) {
-        std::cout << "Fibonacci(" << i << ") = " << a << std::endl;
-        temp = a;
-        a = b;
-        b = temp + b;
-    }
-    
-    return 0;
-}`,
-                    'input': `#include <iostream>
-#include <string>
-
-int main() {
-    std::string name;
-    int age;
-    
-    std::cout << "What's your name? ";
-    std::getline(std::cin, name);
-    
-    std::cout << "Hello, " << name << "! How old are you? ";
-    
-    if (!(std::cin >> age)) {
-        std::cout << "That's not a valid age!" << std::endl;
-        return 1;
-    }
-    
-    std::cout << "Wow, " << name << "! You'll be " << age + 10 << " years old in 10 years." << std::endl;
-    
-    return 0;
-}`
+                    'hello': `#include <iostream>\n\nint main() {\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}`,
+                    'fibonacci': `#include <iostream>\n\nint main() {\n    int a = 0, b = 1, temp;\n    std::cout << "Fibonacci Series (first 10 numbers):" << std::endl;\n    for (int i = 0; i < 10; i++) {\n        std::cout << "Fibonacci(" << i << ") = " << a << std::endl;\n        temp = a;\n        a = b;\n        b = temp + b;\n    }\n    return 0;\n}`,
+                    'input': `#include <iostream>\n#include <string>\n#include <limits> // Required for std::numeric_limits\n\nint main() {\n    std::string name;\n    int age;\n    std::cout << "What's your name? ";\n    std::getline(std::cin, name);\n    std::cout << "Hello, " << name << "! How old are you? ";\n    while (!(std::cin >> age)) {\n        std::cout << "That's not a valid age! Please enter a number: ";\n        std::cin.clear(); // Clear error flags\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // Discard invalid input\n    }\n    std::cout << "Wow, " << name << "! You'll be " << age + 10 << " years old in 10 years." << std::endl;\n    return 0;\n}`
                 }
             };
-            
-            // Set the appropriate example in the editor
-            if (examples[currentLanguage] && examples[currentLanguage][example]) {
-                editor.setValue(examples[currentLanguage][example]);
-                
-                // Add example input for the input examples
-                if (example === 'input') {
-                    switch(currentLanguage) {
-                        case 'rust':
-                        case 'python':
-                        case 'c':
-                        case 'cpp':
-                            programInput.value = "John Doe\n25";
-                            break;
-                    }
+            if (examples[currentLanguage] && examples[currentLanguage][exampleName]) {
+                editor.setValue(examples[currentLanguage][exampleName]);
+                 if (exampleName === 'input') { // Provide example input for "input" examples
+                    programInputEl.value = "Test User\n30";
                 }
             }
-            
-            // Clear the output when loading an example
-            document.getElementById('output').innerHTML = '';
-            document.getElementById('status').textContent = 'Example loaded';
+            document.getElementById('output').textContent = 'Example loaded. Ready to compile.';
+            document.getElementById('status').textContent = `Loaded: ${exampleName}`;
         }
         
-        // Initialize keyboard shortcuts for autocompletion
-        editor.on("keyup", function(cm, event) {
-            if (!cm.state.completionActive && 
-                event.keyCode >= 65 && event.keyCode <= 90) { // A-Z keys
-                CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
-            }
-        });
-        
-        // Handle Ctrl+Enter shortcut
+        // Keyboard shortcuts
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.key === 'Enter') {
                 compileAndRun();
                 event.preventDefault();
             }
+            // Potentially add Ctrl+S for saveCurrentCode if not handled by PySide6
+             if (event.ctrlKey && event.key === 's') {
+                saveCurrentCode();
+                event.preventDefault();
+            }
         });
-        
-        // Close settings panel when clicking outside
+
+        // Close settings panel on outside click
         document.addEventListener('click', function(event) {
             const panel = document.getElementById('settings-panel');
             const settingsBtn = document.querySelector('.toolbar-btn[title="Settings"]');
-            
-            if (panel.style.display === 'block' && 
-                !panel.contains(event.target) && 
-                event.target !== settingsBtn) {
+            if (panel.style.display === 'block' && !panel.contains(event.target) && event.target !== settingsBtn && !settingsBtn.contains(event.target) ) {
                 panel.style.display = 'none';
             }
         });
-        
-        // Load initial example
-        loadExample('hello');
+
+    </script>
     </script>
 </body>
 </html>

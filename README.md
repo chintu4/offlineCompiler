@@ -89,6 +89,19 @@ There are two ways to run this application:
 - Example code snippets for each language
 - Clean, responsive UI
 - Completely offline - no internet connection required
+- **Code History:** Automatically saves your code snippets to a local SQLite database. You can view, load, and delete saved code via the history panel in the desktop application or through dedicated API endpoints if using the web version directly.
+
+### Code History Details
+
+- **Saving Code:** Code can be saved using the "Save" icon in the editor toolbar (Ctrl+S). A title is automatically generated from the first line of code, or you can be prompted for one (feature may vary by interface).
+- **Viewing History:**
+    - **Desktop App:** A "Code History" panel is available as a dockable widget. It lists saved snippets with language, title, and timestamp. You can refresh this list, load code by double-clicking or using a context menu, and delete entries.
+    - **Web Interface (Direct):** History is accessible via API endpoints (`/api/history`). The HTML interface includes a basic (initially hidden) panel that can be populated via JavaScript if you are running the Flask app directly and not through the PySide6 wrapper.
+- **Database Location:** The SQLite database file (`code_history.sqlite3`) is stored in a platform-specific user data directory:
+    - **Windows:** `%APPDATA%\OfflineCompiler\` (e.g., `C:\Users\<YourUser>\AppData\Roaming\OfflineCompiler\`)
+    - **Linux:** `$XDG_DATA_HOME/OfflineCompiler/` (typically `~/.local/share/OfflineCompiler/`)
+    - **macOS:** `~/Library/Application Support/OfflineCompiler/` (Note: `database.py` currently uses the Linux XDG path for macOS; this might be refined).
+- **Deleting History:** Individual entries can be deleted from the history panel in the desktop app or via the API.
 
 ## Offline Mode
 

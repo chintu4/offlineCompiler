@@ -1,0 +1,91 @@
+ * Serving Flask app 'main.py'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.2:5000
+[33mPress CTRL+C to quit[0m
+[4217:4368:0710/095240.873232:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4370:7:0710/095240.916472:ERROR:command_buffer_proxy_impl.cc(131)] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+127.0.0.1 - - [10/Jul/2025 09:52:40] "GET / HTTP/1.1" 200 -
+[4217:4368:0710/095241.039717:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/codemirror.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.060374:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.063472:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.066671:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/theme/dracula.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.069781:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.074945:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.077536:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/theme/monokai.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.080256:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/theme/material.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.092950:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/theme/solarized.min.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/theme/nord.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.107378:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/addon/fold/foldgutter.min.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/addon/hint/show-hint.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.118982:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.121332:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.123006:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/addon/dialog/dialog.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.125467:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.127635:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/css/codemirror/addon/search/matchesonscrollbar.min.css HTTP/1.1" 200 -
+[4217:4368:0710/095241.132297:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "[33mGET /static/css/fontawesome/all.min.css HTTP/1.1[0m" 404 -
+[4217:4368:0710/095241.140111:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/mode/rust/rust.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/edit/closebrackets.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.144339:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/mode/python/python.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.150704:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/mode/clike/clike.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.154947:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/edit/closetag.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/codemirror.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.163972:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.169514:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/edit/matchbrackets.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/fold/foldcode.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.176974:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/fold/foldgutter.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.178710:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/fold/brace-fold.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.191255:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/fold/comment-fold.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.199572:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.202553:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.204863:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/hint/show-hint.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.215744:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/dialog/dialog.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.226732:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/search/jump-to-line.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/hint/anyword-hint.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/search/searchcursor.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.231121:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/search/search.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/search/match-highlighter.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.235948:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.239007:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.241908:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.243626:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/comment/comment.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/selection/active-line.min.js HTTP/1.1" 200 -
+[4217:4368:0710/095241.254410:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+[4217:4368:0710/095241.256933:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/edit/trailingspace.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/keymap/sublime.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/codemirror/addon/display/placeholder.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/beautify/beautify.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/beautify/beautify-css.min.js HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:41] "GET /static/js/beautify/beautify-html.min.js HTTP/1.1" 200 -
+js: Uncaught TypeError: e.defineSimpleMode is not a function
+[4217:4368:0710/095241.485279:ERROR:socket_posix.cc(93)] CreatePlatformSocket() failed: Address family not supported by protocol (97)
+127.0.0.1 - - [10/Jul/2025 09:52:41] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+127.0.0.1 - - [10/Jul/2025 09:52:45] "HEAD /static/css/codemirror/codemirror.min.css HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:45] "HEAD / HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:45] "POST /api/save_code HTTP/1.1" 200 -
+127.0.0.1 - - [10/Jul/2025 09:52:45] "GET /api/history HTTP/1.1" 200 -
