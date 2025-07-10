@@ -4,6 +4,12 @@ import urllib.parse
 import zipfile
 from io import BytesIO
 
+# Base directories (move these to the top)
+static_dir = "static"
+js_dir = os.path.join(static_dir, "js")
+css_dir = os.path.join(static_dir, "css")
+fonts_dir = os.path.join(static_dir, "fonts")
+
 def file_exists_and_not_empty(file_path):
     """
     Check if a file exists and is not empty.
@@ -73,10 +79,14 @@ js_dir = os.path.join(static_dir, "js")
 css_dir = os.path.join(static_dir, "css")
 fonts_dir = os.path.join(static_dir, "fonts")
 
-# Ensure directories exist
+# Ensure directories exist before checking for dependencies
 for directory in [static_dir, js_dir, css_dir, fonts_dir]:
     ensure_dir(directory)
 
+# Now check if dependencies are already installed
+if check_already_install_dependencies_installed():
+    print("Skipping download process as dependencies are already installed.")
+    exit(0)
 # Create subdirectories for libraries
 codemirror_js_dir = os.path.join(js_dir, "codemirror")
 codemirror_css_dir = os.path.join(css_dir, "codemirror")
