@@ -169,5 +169,12 @@ def compile_and_run():
                     "runtime_error": "Program execution timed out (limit: 5 seconds)"
                 })
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# The Flask app instance
+# To run the app, use the command: flask run
+
+# To run with debug mode and specific host/port:
+# flask run --debug --host=0.0.0.0 --port=5000
+
+# The following block is commented out to prevent auto-run when imported
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=5000)

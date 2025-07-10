@@ -38,17 +38,45 @@ A web-based interface for compiling and running code in multiple languages local
 
 ## Usage
 
-1. Run the Flask application:
-   ```
-   python main.py
-   ```
-2. Open your web browser and navigate to: `http://localhost:5000`
-3. Select the programming language you want to use
-4. Enter your code in the editor or select one of the provided examples
-5. Add compiler options if needed
-6. Provide input for your program if required
-7. Click "Compile & Run" to execute the code
-8. View the output or any errors in the output panel
+There are two ways to run this application:
+
+**1. As a Desktop Application (Recommended for Offline Use):**
+
+   This method uses a PySide6 GUI to wrap the web interface, providing a standalone desktop experience.
+
+   1. Ensure all dependencies, including PySide6, are installed:
+      ```bash
+      pip install -r requirements.txt
+      ```
+   2. Run the PySide6 application:
+      ```bash
+      python app.py
+      ```
+   This will open a window containing the compiler interface. The Flask server will be started and managed automatically in the background.
+
+**2. As a Web Application (Traditional Flask method):**
+
+   If you prefer to run it as a standard web application accessible via a browser:
+
+   1. Ensure Flask is installed (it's included in `requirements.txt`):
+      ```bash
+      pip install -r requirements.txt
+      ```
+   2. Run the Flask application directly (ensure `main.py` is configured to run, or use `flask run`):
+      ```bash
+      flask run --host=0.0.0.0 --port=5000
+      ```
+      (You might need to set `FLASK_APP=main.py` as an environment variable if not running `python main.py` directly after uncommenting its `if __name__ == '__main__':` block)
+   3. Open your web browser and navigate to: `http://localhost:5000`
+
+**Using the Interface (Applies to Both Methods):**
+
+1. Once the application is running (either as a desktop app or in your browser), select the programming language you want to use.
+2. Enter your code in the editor or select one of the provided examples.
+3. Add compiler options if needed.
+4. Provide input for your program if required.
+5. Click "Compile & Run" to execute the code.
+6. View the output or any errors in the output panel.
 
 ## Features
 
